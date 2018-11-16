@@ -1,0 +1,20 @@
+# ignore subject data
+experiment/data/*
+
+# ignore original stimuli
+experiment/stimuli/original/*
+experiment/stimuli/modified/*
+
+# ignore identifier
+_*
+
+
+
+# ignore vs-code files
+experiment/.vscode/*
+
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
