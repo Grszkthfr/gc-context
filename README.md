@@ -12,7 +12,7 @@ laboratory at the [University of Würzburg](http://www.i1.psychologie.uni-wuerzb
 Installation of Python 2.7
 +   only tested on Python 2.7, but should also run on Python 3
   
-```$ (sudo) pip install``` 
+```$ (sudo) pip install psychopy``` 
 
 +   A detailed List of dependencies can be found 
 [here](http://psychopy.org/installation.html#manual-install).
