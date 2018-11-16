@@ -8,14 +8,19 @@ experiment/stimuli/modified/*
 # ignore identifier
 _*
 
+# ignore links
+*.lnk
+
 # ignore gimp files
-*.xfc
+*.xcf
 
 # ignore vs-code files
 experiment/.vscode/*
 
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# computed files
+experiment/stimuli/stim_list.csv
+experiment/trial_list.csv
+experiment/context-gaze_cueing.pyc
 
+# vs code
+gc-context.code-workspace
