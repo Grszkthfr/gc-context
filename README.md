@@ -3,8 +3,6 @@
 This repository contains Python code to run a modified Posner task in the 
 laboratory at the [University of Würzburg](http://www.i1.psychologie.uni-wuerzburg.de/en/ekp/home).
 
-## Experiment
-
 ## Prerequisits
 
 ### Installation by hand:
@@ -34,5 +32,3 @@ Download and install [Psychopy (Standalone)](http://psychopy.org/installation.ht
 
 I have no permission to publish the original stimuli used in this experiment.
 Please [contact me](mailto:jonas.grossekathoefer@uni-wuerzburg.de) for further details.
-
-
