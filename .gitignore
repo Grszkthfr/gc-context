@@ -8,7 +8,8 @@ experiment/stimuli/modified/*
 # ignore identifier
 _*
 
-
+# ignore gimp files
+*.xfc
 
 # ignore vs-code files
 experiment/.vscode/*
