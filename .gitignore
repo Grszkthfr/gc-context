@@ -18,8 +18,7 @@ _*
 experiment/.vscode/*
 
 # computed files
-experiment/stimuli/stim_list.csv
-experiment/trial_list.csv
+experiment/gcc-trials.csv
 experiment/context-gaze_cueing.pyc
 
 # vs code
