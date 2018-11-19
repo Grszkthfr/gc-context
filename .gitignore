@@ -5,6 +5,10 @@ experiment/data/*
 experiment/stimuli/original/*
 experiment/stimuli/modified/*
 
+!experiment/stimuli/original/img/example.png
+!experiment/stimuli/original/roi/example.png
+
+
 # ignore identifier
 _*
 
