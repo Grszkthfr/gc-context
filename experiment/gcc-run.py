@@ -49,7 +49,7 @@ min_reading = 2           # minimal time instructions are present
 t_id = ["E", "F"]
 t_pos = ["left", "right"]
 # cue_dir = ["left", "right"]
-ctx = ["modified/context", "modified/face_only"]
+ctx = ["modified" + os.path.sep + "context" + os.path.sep, "modified" + os.path.sep + "face_only"]
 soa = .75                   # inter stimulus intervall in seconds
 
 response_key_E = 'u'           # response key for "E"
@@ -60,8 +60,8 @@ quit_key = "q"                # exit key to exit experiment (for experimenter)
 # d) Prerequisits
 
 stim_dir = 'stimuli' + os.path.sep
-img_dir = 'original' + os.path.sep + 'img'
-roi_dir = 'original' + os.path.sep + 'roi'
+img_dir = 'original' + os.path.sep + 'img' + os.path.sep
+roi_dir = 'original' + os.path.sep + 'roi' + os.path.sep
 #stim_list = "stim_list.csv"
 
 trials_ctx = []
@@ -90,6 +90,10 @@ def wait(seconds):
 def getDate(time=core.getAbsTime(), format='%Y-%m-%d'):
     timeNowString = datetime.datetime.fromtimestamp(time).strftime(format)
     return timeNowString
+
+def makeDirectory(path):
+    if not os.path.isdir(path):
+        os.makedirs(path)
 
 
 def prepareExperiment():
@@ -133,6 +137,9 @@ def showText(win, txt):
 
 def makeStim(draw_center=False):
     imgs = []
+
+    makeDirectory(stim_dir + ctx[0])
+    makeDirectory(stim_dir + ctx[1])
 
     for imgs in os.listdir(os.path.join(stim_dir, img_dir)):
         # print(imgs)

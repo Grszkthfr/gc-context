@@ -2,8 +2,8 @@
 experiment/data/*
 
 # ignore original stimuli
-experiment/stimuli/original/*
-experiment/stimuli/modified/*
+experiment/stimuli/original/img/*
+experiment/stimuli/original/roi/*
 
 !experiment/stimuli/original/img/example.png
 !experiment/stimuli/original/roi/example.png
@@ -24,6 +24,8 @@ experiment/.vscode/*
 # computed files
 experiment/gcc-trials.csv
 experiment/context-gaze_cueing.pyc
+experiment/stimuli/modified/*
+
 
 # vs code
 gc-context.code-workspace

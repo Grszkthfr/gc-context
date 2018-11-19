@@ -23,7 +23,7 @@ Download and install [Psychopy (Standalone)](http://psychopy.org/installation.ht
 
 ### Example
 
-![example stimuli](experiment/stimuli/example/example-stimuli.png)
+![example stimuli](example-stimuli.png)
 +   original image
 +   image with context and placeholders for targets (to cover objects)
 +   image with out context
