@@ -25,6 +25,7 @@ experiment/.vscode/*
 experiment/gcc-trials.csv
 experiment/context-gaze_cueing.pyc
 experiment/stimuli/modified/*
+*.pyc
 
 
 # vs code
