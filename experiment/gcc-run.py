@@ -41,7 +41,10 @@ goodbye_text = ""
 
 # c) Characteristics
 
-session_info = {"subject": "ID of subject", "experimenter": "Name of experimenter", "computer": "Number of computer"}
+session_info = {"subject": "ID of subject",
+                "experimenter": "Name of experimenter",
+                "computer": "Number of computer"}
+
 max_rt = .800       # maximale time to respond to target in seconds
 iti = (1, 1.5)           # jittered time in seconds between two trials
 min_reading = 2           # minimal time instructions are present
@@ -49,8 +52,10 @@ min_reading = 2           # minimal time instructions are present
 t_id = ["E", "F"]
 t_pos = ["left", "right"]
 # cue_dir = ["left", "right"]
-ctx = ["modified" + os.path.sep + "context" + os.path.sep, "modified" + os.path.sep + "face_only"]
-soa = .75                   # inter stimulus intervall in seconds
+ctx = ["modified" + os.path.sep + "context" + os.path.sep,
+       "modified" + os.path.sep + "face_only" + os.path.sep]
+
+soa = .5                   # inter stimulus intervall in seconds
 
 response_key_E = 'u'           # response key for "E"
 response_key_F = 'n'           # response key for "F"
@@ -60,9 +65,8 @@ quit_key = "q"                # exit key to exit experiment (for experimenter)
 # d) Prerequisits
 
 stim_dir = 'stimuli' + os.path.sep
-img_dir = 'original' + os.path.sep + 'img' + os.path.sep
-roi_dir = 'original' + os.path.sep + 'roi' + os.path.sep
-#stim_list = "stim_list.csv"
+img_dir = 'original' + os.path.sep + 'imgs' + os.path.sep
+roi_dir = 'original' + os.path.sep + 'rois' + os.path.sep
 
 trials_ctx = []
 trials_fo = []
@@ -93,7 +97,7 @@ def getDate(time=core.getAbsTime(), format='%Y-%m-%d'):
 
 def makeDirectory(path):
     if not os.path.isdir(path):
-        os.makedirs(path)
+        os.makedirs(path) # throws an error when failing
 
 
 def prepareExperiment():
@@ -105,7 +109,7 @@ def prepareExperiment():
         if input.OK == False:
             core.quit()
 
-        # if Subject field wasn't specified, display Input-win again (i.e. don't break the loop)
+        # if Subject field wasn't specified, display Input-win again
         if (session_info['subject'] != ''): break   
 
     # set global window
@@ -116,7 +120,6 @@ def prepareExperiment():
     print("Experimenter is: ", session_info['experimenter'])
     print("Computer is: ", session_info['computer'])
 
-    #make_
     # prepare trial list
     getTriallist(stim_dir)
 
@@ -141,13 +144,15 @@ def makeStim(draw_center=False):
     makeDirectory(stim_dir + ctx[0])
     makeDirectory(stim_dir + ctx[1])
 
+    print("Please wait, creating stimuli!")
+
     for imgs in os.listdir(os.path.join(stim_dir, img_dir)):
         # print(imgs)
 
         img = cv2.imread(os.path.join(stim_dir, img_dir, imgs))
         roi = cv2.imread(os.path.join(stim_dir, roi_dir, imgs))
 
-        # targets
+        # targets color detection
         # define (the list of) & create NumPy arrays from the boundaries
         # BGR: OpenCV represents images as NumPy arrays in reverse order
         lower_t = np.array([0,250,250], dtype="uint8")
@@ -163,55 +168,7 @@ def makeStim(draw_center=False):
 
         cnt_t = sorted(contours, key=cv2.contourArea, reverse=True)
 
-        # x1,y1 ------
-        # |          |
-        # |          |
-        # |          |
-        # --------x2,y2
-
-        # coords rect 1 & 2
-        t1_x1, t1_y1, t1_w, t1_h = cv2.boundingRect(cnt_t[0])
-        t2_x1, t2_y1, t2_w, t2_h = cv2.boundingRect(cnt_t[1])
-
-        # draw rect t1
-        # t1_x2 = t1_x1+t1_w
-        # t1_y2 = t1_y1+t1_h
-        # cv2.rectangle(img, (t1_x1,t1_y1), (t1_x2,t1_y2), (128,128,128), -1)
-
-        # draw rect t2
-        # t2_x2 = t2_x1+t2_w
-        # t2_y2 = t2_y1+t2_h
-        # cv2.rectangle(img, (t2_x1,t2_y1), (t2_x2,t2_y2), (128,128,128), -1)
-
-        if t1_h >= t2_h:
-            h_max = t1_h
-        else:
-            h_max = t2_h
-
-        if t1_w >= t2_w:
-            w_max = t1_w
-        else:
-            w_max = t2_w
-
-        # targets center
-        cx_t1 = int(t1_x1+t1_w/2)
-        cy_t1 = int(t1_y1+t1_h/ 2)
-
-        cx_t2 = int(t2_x1+t2_w/2)
-        cy_t2 = int(t2_y1+t2_h/2)
-
-        # target rects
-        t1_x1 = cx_t1-int(w_max/2)
-        t1_y1 = cy_t1-int(h_max/2)
-        t1_x2 = cx_t1+int(w_max/2)
-        t1_y2 = cy_t1+int(h_max/2)
-
-        t2_x1 = cx_t2-int(w_max/2)
-        t2_y1 = cy_t2-int(h_max/2)
-        t2_x2 = cx_t2+int(w_max/2)
-        t2_y2 = cy_t2+int(h_max/2)
-
-        # cue
+        # cue color detection
         lower_c = np.array([0,250,0], dtype="uint8")
         upper_c = np.array([0,255,0], dtype="uint8")
 
@@ -226,38 +183,101 @@ def makeStim(draw_center=False):
 
         cnt_c = sorted(contours, key=cv2.contourArea, reverse=True)
 
-        # circle around face, only largest area of interest
-        (x,y), radius = cv2.minEnclosingCircle(cnt_c[0])
-        cx_c = int(x)
-        cy_c = int(y)
+        # check if areas are detected
+        if len(cnt_t) < 2 or len(cnt_c) < 1:
+            with open("stimFail.txt", 'ab') as saveFile:
+                fileWriter = csv.writer(saveFile, delimiter=',')
+            
+                # write trial
+                fileWriter.writerow([imgs])
 
-        # somehow not black into gray, but makes black into gray.
-        roi_c[mask_c != 255] = [128,128,128]
+        else:
 
-        # cover targets
-        cv2.rectangle(img, (t1_x1,t1_y1), (t1_x2,t1_y2), (128,128,128), -1)
-        cv2.rectangle(img, (t2_x1,t2_y1), (t2_x2,t2_y2), (128,128,128), -1)
+            # x1,y1 ------
+            # |          |
+            # |          |
+            # |          |
+            # --------x2,y2
 
-        if draw_center == True:
-            # draw center [radius=3, color=(255,255,255), thickness=-1]
-            cv2.circle(img, (cx_t1,cy_t1), 3, (0,0,255), -1)
-            cv2.circle(img, (cx_t2,cy_t2), 3, (0,0,255), -1)
-            cv2.circle(img,(cx_c,cy_c), 3, (0,0,255), -1)
+            # coords rect 1 & 2
+            t1_x1, t1_y1, t1_w, t1_h = cv2.boundingRect(cnt_t[0])
+            t2_x1, t2_y1, t2_w, t2_h = cv2.boundingRect(cnt_t[1])
 
-            cv2.circle(roi_c, (cx_t1,cy_t1), 3, (0,0,255), -1)
-            cv2.circle(roi_c, (cx_t2,cy_t2), 3, (0,0,255), -1)
-            cv2.circle(roi_c,(cx_c,cy_c), 3, (0,0,255), -1)
+            # draw rect t1
+            # t1_x2 = t1_x1+t1_w
+            # t1_y2 = t1_y1+t1_h
+            # cv2.rectangle(img, (t1_x1,t1_y1), (t1_x2,t1_y2), (128,128,128), -1)
 
-        # context
-        # write image context
-        cv2.imwrite(os.path.join(stim_dir, ctx[0], imgs), img)
+            # draw rect t2
+            # t2_x2 = t2_x1+t2_w
+            # t2_y2 = t2_y1+t2_h
+            # cv2.rectangle(img, (t2_x1,t2_y1), (t2_x2,t2_y2), (128,128,128), -1)
 
-        # face only 
-        # write image face_only
-        cv2.imwrite(os.path.join(stim_dir, ctx[1], imgs), roi_c)
+            if t1_h >= t2_h:
+                h_max = t1_h
+            else:
+                h_max = t2_h
 
-        trials_ctx.append([ctx[0], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
-        trials_fo.append([ctx[1], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
+            if t1_w >= t2_w:
+                w_max = t1_w
+            else:
+                w_max = t2_w
+
+            # targets center
+            cx_t1 = int(t1_x1+t1_w/2)
+            cy_t1 = int(t1_y1+t1_h/ 2)
+
+            cx_t2 = int(t2_x1+t2_w/2)
+            cy_t2 = int(t2_y1+t2_h/2)
+
+            # target rects
+            t1_x1 = cx_t1-int(w_max/2)
+            t1_y1 = cy_t1-int(h_max/2)
+            t1_x2 = cx_t1+int(w_max/2)
+            t1_y2 = cy_t1+int(h_max/2)
+
+            t2_x1 = cx_t2-int(w_max/2)
+            t2_y1 = cy_t2-int(h_max/2)
+            t2_x2 = cx_t2+int(w_max/2)
+            t2_y2 = cy_t2+int(h_max/2)
+
+            # circle around face, only largest area of interest
+            (x,y), radius = cv2.minEnclosingCircle(cnt_c[0])
+            cx_c = int(x)
+            cy_c = int(y)
+
+            # somehow not black into gray, but makes black into gray.
+            roi_c[mask_c != 255] = [128,128,128]
+
+            # cover targets
+            cv2.rectangle(img, (t1_x1,t1_y1), (t1_x2,t1_y2), (128,128,128), -1)
+            cv2.rectangle(img, (t2_x1,t2_y1), (t2_x2,t2_y2), (128,128,128), -1)
+
+            if draw_center == True:
+                # draw center [radius=3, color=(255,255,255), thickness=-1]
+                cv2.circle(img, (cx_t1,cy_t1), 3, (0,0,255), -1)
+                cv2.circle(img, (cx_t2,cy_t2), 3, (0,0,255), -1)
+                cv2.circle(img,(cx_c,cy_c), 3, (0,0,255), -1)
+
+                cv2.circle(roi_c, (cx_t1,cy_t1), 3, (0,0,255), -1)
+                cv2.circle(roi_c, (cx_t2,cy_t2), 3, (0,0,255), -1)
+                cv2.circle(roi_c,(cx_c,cy_c), 3, (0,0,255), -1)
+
+            # context
+            # write image context
+            cv2.imwrite(os.path.join(stim_dir, ctx[0], imgs), img)
+
+            # face only 
+            # write image face_only
+            cv2.imwrite(os.path.join(stim_dir, ctx[1], imgs), roi_c)
+
+            trials_ctx.append([ctx[0], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
+            trials_fo.append([ctx[1], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
+
+    if os.path.isfile("failStim.txt") :
+        print("MakeStim() failed for ", len(list(open("some_file.txt"))), " images!")
+    else:
+        print("MakeStim() successfully completed!")
 
     return(trials_ctx, trials_fo)
 
@@ -269,7 +289,7 @@ def getTriallist(stim_dir):
     if not os.path.isfile("gcc-trials.csv"):
 
         # make stimuli
-        makeStim()
+        makeStim(draw_center=True)
 
         # for all trial characteristics
         stim_prod = list(product(t_id, t_pos))
@@ -552,10 +572,10 @@ def showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
 def writeLog(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, correct_response, reaction_time):
 
     # check if file and folder already exist
-    if not os.path.isdir('data' + os.path.sep + 'raw'):
-        os.makedirs('data/raw')     # if this fails (e.g. permissions) you will get an error
-    fileName = 'data' + os.path.sep + 'raw' + os.path.sep + exp_name + '_' + getDate() + '_' + session_info['subject'].zfill(2) + '.csv'    # generate file name with name of the experiment and subject
+    makeDirectory('data' + os.path.sep + 'raw')
+    fileName = 'data' + os.path.sep + 'raw' + os.path.sep + exp_name + '_' + getDate() + '_' + session_info['subject'].zfill(2) + '.csv' 
 
+    # generate file name with name of the experiment and subject
     # open file
     # 'a' = append; 'w' = writing; 'b' = in binary mode
     with open(fileName, 'ab') as saveFile:
@@ -597,9 +617,9 @@ def runTrials(randomize=True):
 def runExperiment():
     prepareExperiment()
 
-    # run_instructions(instruction_pages)
+    runInstructions(instruction_pages)
     runTrials()
-    # showText(win, goodbye_text)
+    showText(win, goodbye_text)
 
     win.close()
     core.quit()
