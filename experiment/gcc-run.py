@@ -68,6 +68,7 @@ stim_dir = 'stimuli' + os.path.sep
 img_dir = 'original' + os.path.sep + 'imgs' + os.path.sep
 roi_dir = 'original' + os.path.sep + 'rois' + os.path.sep
 
+n_trials = list(range(2))
 trials_ctx = []
 trials_fo = []
 trial_count = 1             # count trials, starting with 1
@@ -596,23 +597,27 @@ def runInstructions(instruction):
 
 def runTrials(randomize=True):
     global trial_count, block_count
+    
+
 
     while block_count <= 4:
-        
-        #for trial_i in range(len(trials_fo)):
-        for trial_i in [1,2,3]:
-            if (randomize):
-                random.shuffle(trials_fo)
-                random.shuffle(trials_ctx)
 
+        if (randomize):
+            print("Trials randomized!")
+            random.shuffle(trials_fo)
+            random.shuffle(trials_ctx)
+
+        for trial_i in n_trials:
+            print(trial_i)
             pickTrial(trial_i)     # run trial i
             print('> trial_count: ', trial_count)
             trial_count += 1
-
+        
         showText(win, pause_text)
-
+        print('>> block_count: ', block_count)
         block_count += 1
 
+    print("All trials shown!")
 
 def runExperiment():
     prepareExperiment()
