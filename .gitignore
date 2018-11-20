@@ -2,8 +2,8 @@
 experiment/data/*
 
 # ignore original stimuli
-experiment/stimuli/original/img/*
-experiment/stimuli/original/roi/*
+experiment/stimuli/original/imgs/*
+experiment/stimuli/original/rois/*
 
 !experiment/stimuli/original/img/example.png
 !experiment/stimuli/original/roi/example.png
