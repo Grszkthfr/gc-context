@@ -20,10 +20,10 @@ from psychopy import visual, core, event, gui
 
 # a) Hardware
 
-screen_size = [1024, 960]
+screen_size = [1920, 1080]
 monitor = "Office207"
 
-full_screen = False
+full_screen = True
 
 # b) Text
 
@@ -31,15 +31,16 @@ exp_name = "gcc"
 
 blank = ""
 
-instruction_pages = ["Hello World!"]
+instruction_pages = [u"Herzlich Willkommen bei unserer Studie „Blickfang“!\n\nVielen Dank, dass Sie sich dafür entschieden haben an unserem Experiment teilzunehmen.\n\nBitte achten Sie auf die weiteren Anweisungen.", u"Bitte bearbeiten Sie den Versuch möglichst schnell und präzise.\nFokussieren Sie bitte immer das Fixationskreuz.\nLegen Sie den Zeigefinger und Mittelfinger ihrer dominanten Hand nun auf die markierten Tasten.\nLassen Sie während des Versuchs die Finger bitte auf der Tastatur.", u"Im Versuch werden Ihnen Bilder dargeboten.\n\nWenn ein \tE\t erscheint, drücken Sie bitte die Taste, die mit dem 'E' markiert ist. \n\nWenn ein \tF\t erscheint, drücken Sie bitte die Taste, die mit dem 'F' markiert ist.\n\n\nBei Fragen wenden Sie sich bitte jetzt an den Versuchsleiter.",
+u"Bitte denken Sie daran, das Fixationskreuz zu fokussieren.\n\nSie können den Versuch nun starten."]
 
-instruction_continue = "\n\n\t\tWeiter mit <Leertaste>"
+instruction_continue = "\n\n\n\t\t\tWeiter mit <Leertaste>"
 
-warningText = ""
+warningText = "Bitte schneller reagieren."
 
-pause_text = ""
+pause_text = "Sie haben den Block nun beendet.\n\nSobald Sie bereit sind können Sie den nächsten Block starten."
 
-goodbye_text = ""
+goodbye_text = "Vielen Danke, dass Sie bei unserer Studie mitgemacht haben.\n\nMelden Sie sich bitte leise beim Versuchsleiter und füllen Sie die Fragebögen aus."
 
 # c) Characteristics
 
