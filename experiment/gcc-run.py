@@ -27,11 +27,13 @@ full_screen = False
 
 # b) Text
 
-exp_name = "gc-ctx"
+exp_name = "gcc"
 
 blank = ""
 
 instruction_pages = ["Hello World!"]
+
+instruction_continue = "\n\n\t\tWeiter mit <Leertaste>"
 
 warningText = ""
 
@@ -68,7 +70,11 @@ stim_dir = 'stimuli' + os.path.sep
 img_dir = 'original' + os.path.sep + 'imgs' + os.path.sep
 roi_dir = 'original' + os.path.sep + 'rois' + os.path.sep
 
-n_trials = list(range(2))
+#set n_trials for testing
+n_trials = []
+n_trials = list(range(4))
+
+
 trials_ctx = []
 trials_fo = []
 trial_count = 1             # count trials, starting with 1
@@ -284,7 +290,7 @@ def makeStim(draw_center=False):
 
 
 def getTriallist(stim_dir):
-    global trials_ctx, trials_fo
+    global trials_ctx, trials_fo, n_trials
 
     # check if triallist is already computed
     if not os.path.isfile("gcc-trials.csv"):
@@ -345,6 +351,8 @@ def getTriallist(stim_dir):
         # print(">>> read trial list:")
         # print("Context: ", trials_ctx[0], "Length: ", len(trials_ctx))
         # print("Face only: ", trials_fo[0], "Length: ", len(trials_fo))
+
+    # n_trials = len(range(trials_ctx))
 
     return trials_ctx, trials_fo
 
@@ -592,7 +600,8 @@ def runInstructions(instruction):
 
     for page in (range(len(instruction))):
         # print(instruction[page])
-        showText(win, instruction[page])
+        instruction_complete = instruction[page]+instruction_continue
+        showText(win, instruction_complete)
 
 
 def runTrials(randomize=True):
@@ -600,7 +609,7 @@ def runTrials(randomize=True):
     
 
 
-    while block_count <= 4:
+    while block_count <= 2:
 
         if (randomize):
             print("Trials randomized!")
