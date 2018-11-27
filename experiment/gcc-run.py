@@ -352,7 +352,7 @@ def getTriallist(stim_dir):
 
     if len(trials_ctx) == len(trials_fo):
         n_trials = len(trials_ctx)
-        print("%d trials will be shown!" %(n_trials))
+        #print("%d trials will be shown!" %(n_trials))
     
     else:
         print(">>>> Error: Unequal trial list for context (length: %d) and face_only (length: %d)!" %(len(trials_ctx), len(trials_fo)) )
