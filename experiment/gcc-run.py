@@ -1,9 +1,9 @@
 # !/usr/bin/env python
 # -*- coding: utf-8 -*- #
 
-# Experiment for the Empra-Group winter semester 2018
-
-# TODO: WARNING         unknown type:computer; add_labels() als dictionary!; PyNaCl: Python binding to the libsodium library, var for testing testing == True (?), unify header, log, writelog, addLable...
+# This code runs a modified gaze cueing paradigma.
+# Originally the experiment was designed to run during winter semester 2018 at the university of Würzburg.
+# Feel free to reuse any of this code, however, it comes with absolute no warranty. 
 
 # Libraries
 
