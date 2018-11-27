@@ -20,10 +20,10 @@ from psychopy import visual, core, event, gui
 
 # a) Hardware
 
-screen_size = [1920, 1080]
+screen_size = [960, 540]
 monitor = "Office207"
 
-full_screen = True
+full_screen = False
 
 # b) Text
 
@@ -31,26 +31,27 @@ exp_name = "gcc"
 
 blank = ""
 
-instruction_pages = [u"Herzlich Willkommen bei unserer Studie „Blickfang“!\n\nVielen Dank, dass Sie sich dafür entschieden haben an unserem Experiment teilzunehmen.\n\nBitte achten Sie auf die weiteren Anweisungen.", u"Bitte bearbeiten Sie den Versuch möglichst schnell und präzise.\nFokussieren Sie bitte immer das Fixationskreuz.\nLegen Sie den Zeigefinger und Mittelfinger ihrer dominanten Hand nun auf die markierten Tasten.\nLassen Sie während des Versuchs die Finger bitte auf der Tastatur.", u"Im Versuch werden Ihnen Bilder dargeboten.\n\nWenn ein \tE\t erscheint, drücken Sie bitte die Taste, die mit dem 'E' markiert ist. \n\nWenn ein \tF\t erscheint, drücken Sie bitte die Taste, die mit dem 'F' markiert ist.\n\n\nBei Fragen wenden Sie sich bitte jetzt an den Versuchsleiter.",
+instruction_pages = [u"Herzlich Willkommen bei unserer Studie „Blickfang“!\n\nVielen Dank, dass Sie sich dafür entschieden haben an unserem Experiment teilzunehmen.\n\nBitte achten Sie auf die weiteren Anweisungen.", u"Bitte bearbeiten Sie den Versuch möglichst schnell und präzise.\n\nFokussieren Sie bitte immer das Fixationskreuz.\n\nLegen Sie den Zeigefinger und Mittelfinger ihrer dominanten Hand nun auf die markierten Tasten und lassen Sie während des Versuchs die Finger bitte auf der Tastatur.", u"Im Versuch werden Ihnen Bilder dargeboten.\n\nWenn ein \tE\t erscheint, drücken Sie bitte die Taste, die mit dem 'E' markiert ist. \n\nWenn ein \tF\t erscheint, drücken Sie bitte die Taste, die mit dem 'F' markiert ist.\n\n\nBei Fragen wenden Sie sich bitte jetzt an den Versuchsleiter.",
 u"Bitte denken Sie daran, das Fixationskreuz zu fokussieren.\n\nSie können den Versuch nun starten."]
 
-instruction_continue = "\n\n\n\t\t\tWeiter mit <Leertaste>"
+text_continue = u"\n\n\n\t\t\t\t\tWeiter mit <Leertaste>"
 
-warningText = "Bitte schneller reagieren."
+warningText = u"Bitte schneller reagieren."
 
-pause_text = "Sie haben den Block nun beendet.\n\nSobald Sie bereit sind können Sie den nächsten Block starten."
+pause_text = u"Sie haben den Block nun beendet.\n\nSobald Sie bereit sind können Sie den nächsten Block starten."
 
-goodbye_text = "Vielen Danke, dass Sie bei unserer Studie mitgemacht haben.\n\nMelden Sie sich bitte leise beim Versuchsleiter und füllen Sie die Fragebögen aus."
+goodbye_text = u"Vielen Dank, dass Sie bei unserer Studie mitgemacht haben.\n\nMelden Sie sich bitte leise beim Versuchsleiter und füllen Sie die Fragebögen aus."
 
 # c) Characteristics
 
 session_info = {"subject": "ID of subject",
+                "session": "Number of Session",
                 "experimenter": "Name of experimenter",
-                "computer": "Number of computer"}
+                "computer": os.getenv('COMPUTERNAME')}
 
 max_rt = .800       # maximale time to respond to target in seconds
-iti = (1, 1.5)           # jittered time in seconds between two trials
-min_reading = 2           # minimal time instructions are present
+iti = (1, 1.5)      # jittered time in seconds between two trials
+min_reading = 2     # minimal time instructions are present
 
 t_id = ["E", "F"]
 t_pos = ["left", "right"]
@@ -73,7 +74,7 @@ roi_dir = 'original' + os.path.sep + 'rois' + os.path.sep
 
 #set n_trials for testing
 n_trials = []
-n_trials = list(range(4))
+#n_trials = list(range(4))
 
 
 trials_ctx = []
@@ -124,10 +125,6 @@ def prepareExperiment():
     win = visual.Window(screen_size, monitor=monitor, fullscr=full_screen)
     event.Mouse(visible=False)
 
-    print("Subject ID is: ", session_info['subject'])
-    print("Experimenter is: ", session_info['experimenter'])
-    print("Computer is: ", session_info['computer'])
-
     # prepare trial list
     getTriallist(stim_dir)
 
@@ -155,7 +152,7 @@ def makeStim(draw_center=False):
     print("Please wait, creating stimuli!")
 
     for imgs in os.listdir(os.path.join(stim_dir, img_dir)):
-        # print(imgs)
+        # print("%s is being modified" %(imgs))
 
         img = cv2.imread(os.path.join(stim_dir, img_dir, imgs))
         roi = cv2.imread(os.path.join(stim_dir, roi_dir, imgs))
@@ -283,9 +280,10 @@ def makeStim(draw_center=False):
             trials_fo.append([ctx[1], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
 
     if os.path.isfile("failStim.txt") :
-        print("MakeStim() failed for ", len(list(open("some_file.txt"))), " images!")
+        print("MakeStim() failed for %s images, plese see 'failStim.txt'!"
+            %(len(list(open("failStim.txt")))))
     else:
-        print("MakeStim() successfully completed!")
+        print("MakeStim() completed!")
 
     return(trials_ctx, trials_fo)
 
@@ -295,9 +293,8 @@ def getTriallist(stim_dir):
 
     # check if triallist is already computed
     if not os.path.isfile("gcc-trials.csv"):
-
         # make stimuli
-        makeStim(draw_center=True)
+        makeStim()
 
         # for all trial characteristics
         stim_prod = list(product(t_id, t_pos))
@@ -325,7 +322,6 @@ def getTriallist(stim_dir):
         # print("Face only: ", trials_fo[0], "Length: ", len(trials_fo))
 
     else:
-
         trial_list = []
         with open("gcc-trials.csv", "rb") as file:
             reader = csv.reader(file)
@@ -345,45 +341,50 @@ def getTriallist(stim_dir):
                 trials_fo.append(trial_list[trial])
 
             else:
-                    print(">>>> Error: Context can't be specified!")
-                    win.close()
-                    core.quit()
+                print(">>>> Error: Context can't be specified!")
+                win.close()
+                core.quit()
 
         # print(">>> read trial list:")
         # print("Context: ", trials_ctx[0], "Length: ", len(trials_ctx))
         # print("Face only: ", trials_fo[0], "Length: ", len(trials_fo))
+    
 
-    # n_trials = len(range(trials_ctx))
-
-    return trials_ctx, trials_fo
+    if len(trials_ctx) == len(trials_fo):
+        n_trials = len(trials_ctx)
+        print("%d trials will be shown!" %(n_trials))
+    
+    else:
+        print(">>>> Error: Unequal trial list for context (length: %d) and face_only (length: %d)!" %(len(trials_ctx), len(trials_fo)) )
+    
+    return trials_ctx, trials_fo, n_trials
 
 
 def pickTrial(trial_i):
-    getTriallist(stim_dir)
 
     # for even subject id
-    if float(session_info['subject']) % 2 == 1:
+    if float(session_info['subject']) % 2 == 0:
         # print(">>> Even subject id")
 
         # for even block
-        if block_count % 2 == 1:    # bei graden Blöcken: context
+        if block_count % 2 == 0:    # bei graden Blöcken: context
             return addLables(trials_ctx[trial_i])
 
         # for odd block
-        elif block_count % 2 == 0:
+        elif block_count % 2 == 1:
             return addLables(trials_fo[trial_i])
 
     # for odd subject id
-    elif float(session_info['subject']) % 2 == 0:
+    elif float(session_info['subject']) % 2 == 1:
         # print(">>> Odd subject id")
 
         # for even block
-        if block_count % 2 == 1:    # bei graden Blöcken: face_only
-            return addLables(trials_ctx[trial_i])
+        if block_count % 2 == 0:    # bei graden Blöcken: face_only
+            return addLables(trials_fo[trial_i])
 
         # for odd block
-        elif block_count % 2 == 0:  # bei ungraden Blöcken: context
-            return addLables(trials_fo[trial_i])
+        elif block_count % 2 == 1:  # bei ungraden Blöcken: context
+            return addLables(trials_ctx[trial_i])
 
     # if subject id neither odd nor even
     else:
@@ -563,13 +564,27 @@ def showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
             core.quit()
 
     while (reactionTime.getTime() > max_rt):    # after max_rt runs out
-        if (event.getKeys(correctKey)) or (event.getKeys(wrongKey)):
-            response = 99
-            rt = 99
+        if event.getKeys(correctKey):
+            response = "correct"
+            rt = reactionTime.getTime()
+            # print('correct')
+            # print(reactionTime.getTime())
 
             SlowWarning.draw()
             win.flip()
             wait(1.5)
+            break
+
+        elif event.getKeys(wrongKey):
+            response = "incorrect"
+            rt = reactionTime.getTime()
+            # print('NOT correct')
+            # print(reactionTime.getTime())
+
+            SlowWarning.draw()
+            win.flip()
+            wait(1.5)
+
             break
 
         if event.getKeys(quit_key):
@@ -591,46 +606,47 @@ def writeLog(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, correct_re
     with open(fileName, 'ab') as saveFile:
         fileWriter = csv.writer(saveFile, delimiter=',')
         if os.stat(fileName).st_size == 0:  # if file is empty, insert header
-            fileWriter.writerow(('exp', 'subject', 'experimenter', 'computer', 'date', 'block', 'trial', 'ctx', 'img', 'c_x', 'c_y', 't1_x', 't1_y', 't2_x', 't2_y', 't_pos', 't_id', 'soa', 'correct_response', 'reaction_time'))
+            fileWriter.writerow(('exp', 'subject', 'session', 'experimenter', 'computer', 'date', 'block', 'trial', 'ctx', 'img', 'c_x', 'c_y', 't1_x', 't1_y', 't2_x', 't2_y', 't_pos', 't_id', 'soa', 'correct_response', 'reaction_time'))
 
         # write trial
-        fileWriter.writerow((exp_name, session_info['subject'].zfill(2), session_info['experimenter'], session_info['computer'], getDate(), block_count, trial_count, ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_pos, t_id, soa, correct_response, reaction_time))
+        fileWriter.writerow((exp_name, session_info['subject'].zfill(2), session_info['session'], session_info['experimenter'], session_info['computer'], getDate(), block_count, trial_count, ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_pos, t_id, soa, correct_response, reaction_time))
 
 
 def runInstructions(instruction):
 
     for page in (range(len(instruction))):
         # print(instruction[page])
-        instruction_complete = instruction[page]+instruction_continue
+        instruction_complete = instruction[page]+text_continue
         showText(win, instruction_complete)
 
 
 def runTrials(randomize=True):
     global trial_count, block_count
     
-
-
     while block_count <= 2:
-
         if (randomize):
             print("Trials randomized!")
             random.shuffle(trials_fo)
             random.shuffle(trials_ctx)
 
-        for trial_i in n_trials:
-            print(trial_i)
+        for trial_i in range(n_trials):
+            print("Picked trial %d of %d per block." %(trial_i+1, n_trials))
             pickTrial(trial_i)     # run trial i
-            print('> trial_count: ', trial_count)
+            #print('> trial_count: %d' %(trial_count))
             trial_count += 1
         
-        showText(win, pause_text)
-        print('>> block_count: ', block_count)
+        showText(win, pause_text + text_continue)
+        #print('>> block_count: %d' %(block_count))
         block_count += 1
 
     print("All trials shown!")
 
 def runExperiment():
     prepareExperiment()
+    
+    print("Subject ID is: %s" %(session_info['subject']))
+    print("Experimenter is: %s" %(session_info['experimenter']))
+    print("Computer is: %s" %(session_info['computer']))
 
     runInstructions(instruction_pages)
     runTrials()
