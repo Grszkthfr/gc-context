@@ -1,4 +1,4 @@
-# !/usr/bin/env python
+﻿# !/usr/bin/env python
 # -*- coding: utf-8 -*- #
 
 # This code runs a modified gaze cueing paradigma.
@@ -20,10 +20,10 @@ from psychopy import visual, core, event, gui
 
 # a) Hardware
 
-screen_size = [960, 540]
-monitor = "Office207"
+screen_size = [1680, 1050]
+monitor = "lab011"
 
-full_screen = False
+full_screen = True
 
 # b) Text
 
@@ -31,7 +31,7 @@ exp_name = "gcc"
 
 blank = ""
 
-instruction_pages = [u"Herzlich Willkommen bei unserer Studie „Blickfang“!\n\nVielen Dank, dass Sie sich dafür entschieden haben an unserem Experiment teilzunehmen.\n\nBitte achten Sie auf die weiteren Anweisungen.", u"Bitte bearbeiten Sie den Versuch möglichst schnell und präzise.\n\nFokussieren Sie bitte immer das Fixationskreuz.\n\nLegen Sie den Zeigefinger und Mittelfinger ihrer dominanten Hand nun auf die markierten Tasten und lassen Sie während des Versuchs die Finger bitte auf der Tastatur.", u"Im Versuch werden Ihnen Bilder dargeboten.\n\nWenn ein \tE\t erscheint, drücken Sie bitte die Taste, die mit dem 'E' markiert ist. \n\nWenn ein \tF\t erscheint, drücken Sie bitte die Taste, die mit dem 'F' markiert ist.\n\n\nBei Fragen wenden Sie sich bitte jetzt an den Versuchsleiter.",
+instruction_pages = [u"", u"Herzlich Willkommen bei unserer Studie „Blickfang“!\n\nVielen Dank, dass Sie sich dafür entschieden haben an unserem Experiment teilzunehmen.\n\nBitte achten Sie auf die weiteren Anweisungen.", u"Bitte bearbeiten Sie den Versuch möglichst schnell und präzise.\n\nFokussieren Sie bitte immer das Fixationskreuz.\n\nLegen Sie den Zeigefinger und Mittelfinger ihrer dominanten Hand nun auf die markierten Tasten und lassen Sie während des Versuchs die Finger bitte auf der Tastatur.", u"Im Versuch werden Ihnen Bilder dargeboten.\n\nWenn ein \tE\t erscheint, drücken Sie bitte die Taste, die mit dem 'E' markiert ist. \n\nWenn ein \tF\t erscheint, drücken Sie bitte die Taste, die mit dem 'F' markiert ist.\n\n\nBei Fragen wenden Sie sich bitte jetzt an den Versuchsleiter.",
 u"Bitte denken Sie daran, das Fixationskreuz zu fokussieren.\n\nSie können den Versuch nun starten."]
 
 text_continue = u"\n\n\n\t\t\t\t\tWeiter mit <Leertaste>"
