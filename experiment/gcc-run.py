@@ -251,10 +251,13 @@ def makeStim(draw_center=False):
             cx_c = int(x)
             cy_c = int(y)
 
-            # somehow not black into gray, but makes black into gray.
-            roi_c[mask_c != 255] = [128,128,128]
+            # somehow not black into white.
+            roi_c[mask_c != 255] = [255,255,255]
+            # draw target locations
+            cv2.rectangle(roi_c, (t1_x1,t1_y1), (t1_x2,t1_y2), (128,128,128), -1)
+            cv2.rectangle(roi_c, (t2_x1,t2_y1), (t2_x2,t2_y2), (128,128,128), -1)
 
-            # cover targets
+            # draw target locations / cover targets
             cv2.rectangle(img, (t1_x1,t1_y1), (t1_x2,t1_y2), (128,128,128), -1)
             cv2.rectangle(img, (t2_x1,t2_y1), (t2_x2,t2_y2), (128,128,128), -1)
 
@@ -643,7 +646,7 @@ def runTrials(randomize=True):
 
 def runExperiment():
     prepareExperiment()
-    
+
     print("Subject ID is: %s" %(session_info['subject']))
     print("Experimenter is: %s" %(session_info['experimenter']))
     print("Computer is: %s" %(session_info['computer']))
