@@ -607,7 +607,7 @@ def writeLog(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, correct_re
     # open file
     # 'a' = append; 'w' = writing; 'b' = in binary mode
     with open(fileName, 'ab') as saveFile:
-        fileWriter = csv.writer(saveFile, delimiter=',')
+        fileWriter = csv.writer(saveFile, delimiter='\t') # tab separated
         if os.stat(fileName).st_size == 0:  # if file is empty, insert header
             fileWriter.writerow(('exp', 'subject', 'session', 'experimenter', 'computer', 'date', 'block', 'trial', 'ctx', 'img', 'c_x', 'c_y', 't1_x', 't1_y', 't2_x', 't2_y', 't_pos', 't_id', 'soa', 'correct_response', 'reaction_time'))
 
