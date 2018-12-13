@@ -600,8 +600,8 @@ def showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
 def writeLog(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, correct_response, reaction_time):
 
     # check if file and folder already exist
-    makeDirectory('data' + os.path.sep + 'raw')
-    fileName = 'data' + os.path.sep + 'raw' + os.path.sep + exp_name + '_' + getDate() + '_' + session_info['subject'].zfill(2) + '.csv' 
+    makeDirectory('log_files')
+    fileName = 'log_files' + os.path.sep + exp_name + '_' + getDate() + '_' + session_info['subject'].zfill(2) + '.csv' 
 
     # generate file name with name of the experiment and subject
     # open file
