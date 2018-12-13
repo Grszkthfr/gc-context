@@ -641,6 +641,7 @@ def runTrials(randomize=True):
         showText(win, pause_text + text_continue)
         #print('>> block_count: %d' %(block_count))
         block_count += 1
+        trial_count = 1  # restart trial_count each block
 
     print("All trials shown!")
 
