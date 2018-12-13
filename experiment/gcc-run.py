@@ -56,8 +56,6 @@ min_reading = 2     # minimal time instructions are present
 t_id = ["E", "F"]
 t_pos = ["left", "right"]
 # cue_dir = ["left", "right"]
-ctx = ["modified" + os.path.sep + "context" + os.path.sep,
-       "modified" + os.path.sep + "face_only" + os.path.sep]
 
 soa = .5                   # inter stimulus intervall in seconds
 
@@ -67,8 +65,10 @@ continue_key = "space"        # continue key for instructions
 quit_key = "q"                # exit key to exit experiment (for experimenter)
 
 # d) Prerequisits
+stim_dir = [
+    "stimuli" + os.path.sep + "modified" + os.path.sep + "context_present" + os.path.sep,
+    "stimuli" + os.path.sep + "modified" + os.path.sep + "context_covered" + os.path.sep]
 
-stim_dir = 'stimuli' + os.path.sep
 img_dir = 'original' + os.path.sep + 'imgs' + os.path.sep
 roi_dir = 'original' + os.path.sep + 'rois' + os.path.sep
 
@@ -146,8 +146,8 @@ def showText(win, txt):
 def makeStim(draw_center=False):
     imgs = []
 
-    makeDirectory(stim_dir + ctx[0])
-    makeDirectory(stim_dir + ctx[1])
+    makeDirectory(stim_dir[0])
+    makeDirectory(stim_dir[1])
 
     print("Please wait, creating stimuli!")
 
@@ -273,14 +273,14 @@ def makeStim(draw_center=False):
 
             # context
             # write image context
-            cv2.imwrite(os.path.join(stim_dir, ctx[0], imgs), img)
+            cv2.imwrite(os.path.join(stim_dir[0], imgs), img)
 
             # face only 
             # write image face_only
-            cv2.imwrite(os.path.join(stim_dir, ctx[1], imgs), roi_c)
+            cv2.imwrite(os.path.join(stim_dir[1], imgs), roi_c)
 
-            trials_ctx.append([ctx[0], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
-            trials_fo.append([ctx[1], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
+            trials_ctx.append([stim_dir[0], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
+            trials_fo.append([stim_dir[1], imgs, cx_c, cy_c, cx_t1, cy_t1, cx_t2, cy_t2])
 
     if os.path.isfile("failStim.txt") :
         print("MakeStim() failed for %s images, plese see 'failStim.txt'!"
@@ -312,7 +312,7 @@ def getTriallist(stim_dir):
             trials_fo[trial] = list(chain.from_iterable(trials_fo[trial]))
 
         # header
-        header = ['ctx', 'img', 'c_x', 'c_y', 't1_x', 't1_y', 't2_x', 't2_y', 't_pos', 't_id']
+        header = ['stim_dir', 'img', 'c_x', 'c_y', 't1_x', 't1_y', 't2_x', 't2_y', 't_pos', 't_id']
 
         with open("gcc-trials.csv", "wb") as file:
             writer = csv.writer(file)
@@ -337,10 +337,10 @@ def getTriallist(stim_dir):
 
         for trial in range(len(trial_list)):
 
-            if trial_list[trial][0] == ctx[0]:
+            if trial_list[trial][0] == stim_dir[0]:
                 trials_ctx.append(trial_list[trial])
 
-            elif trial_list[trial][0] == ctx[1]:
+            elif trial_list[trial][0] == stim_dir[1]:
                 trials_fo.append(trial_list[trial])
 
             else:
@@ -358,7 +358,7 @@ def getTriallist(stim_dir):
         #print("%d trials will be shown!" %(n_trials))
     
     else:
-        print(">>>> Error: Unequal trial list for context (length: %d) and face_only (length: %d)!" %(len(trials_ctx), len(trials_fo)) )
+        print(">>>> Error: Unequal trial list for context-present (length: %d) and context-covered (length: %d)!" %(len(trials_ctx), len(trials_fo)) )
     
     return trials_ctx, trials_fo, n_trials
 
@@ -408,7 +408,7 @@ def addLables(trial):
     '''
 
     if len(trial) == 10:
-        ctx = trial[0]
+        stim_dir = trial[0]
         img = trial[1]
         c_x = int(trial[2]) - 640
         c_y = 480 - int(trial[3])
@@ -419,7 +419,7 @@ def addLables(trial):
         t_id = trial[8]
         t_pos = trial[9]
 
-        return(showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos))
+        return(showTrial(stim_dir, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos))
 
     else:
         print(">>>> Error: len(Trial) has more then 9 entries: ", len(trial))
@@ -427,7 +427,7 @@ def addLables(trial):
         core.quit()
 
 
-def showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
+def showTrial(stim_dir, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
 
     FixationCross = visual.TextStim(
         win, text="+", font='Arial', pos=[c_x, c_y],
@@ -437,7 +437,7 @@ def showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
         win, text=warningText, font='Arial', pos=[0, 0],
         height=30, units='pix', color='white')
 
-    #print(ctx, img, t_pos, t_id)
+    #print(stim_dir, img, t_pos, t_id)
 
     # find target positions:
     if t1_y < t2_y:
@@ -507,7 +507,7 @@ def showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
 
     stimulus = visual.ImageStim(
         win, units='pix', size=[1280, 960], pos=(0, 0))
-    stimulus.setImage(stim_dir + ctx + os.path.sep + img)
+    stimulus.setImage(stim_dir + os.path.sep + img)
     stimulus.draw()
 
     win.flip()  # draw stimulus
@@ -594,10 +594,10 @@ def showTrial(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos):
             print('quit')
             core.quit()
 
-    return writeLog(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, response, rt)
+    return writeLog(stim_dir, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, response, rt)
 
 
-def writeLog(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, correct_response, reaction_time):
+def writeLog(stim_dir, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, correct_response, reaction_time):
 
     # check if file and folder already exist
     makeDirectory('log_files')
@@ -609,10 +609,10 @@ def writeLog(ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_id, t_pos, correct_re
     with open(fileName, 'ab') as saveFile:
         fileWriter = csv.writer(saveFile, delimiter='\t') # tab separated
         if os.stat(fileName).st_size == 0:  # if file is empty, insert header
-            fileWriter.writerow(('exp', 'subject', 'session', 'experimenter', 'computer', 'date', 'block', 'trial', 'ctx', 'img', 'c_x', 'c_y', 't1_x', 't1_y', 't2_x', 't2_y', 't_pos', 't_id', 'soa', 'correct_response', 'reaction_time'))
+            fileWriter.writerow(('exp', 'subject', 'session', 'experimenter', 'computer', 'date', 'block', 'trial', 'stim_dir', 'img', 'c_x', 'c_y', 't1_x', 't1_y', 't2_x', 't2_y', 't_pos', 't_id', 'soa', 'correct_response', 'reaction_time'))
 
         # write trial
-        fileWriter.writerow((exp_name, session_info['subject'].zfill(2), session_info['session'], session_info['experimenter'], session_info['computer'], getDate(), block_count, trial_count, ctx, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_pos, t_id, soa, correct_response, reaction_time))
+        fileWriter.writerow((exp_name, session_info['subject'].zfill(2), session_info['session'], session_info['experimenter'], session_info['computer'], getDate(), block_count, trial_count, stim_dir, img, c_x, c_y, t1_x, t1_y, t2_x, t2_y, t_pos, t_id, soa, correct_response, reaction_time))
 
 
 def runInstructions(instruction):
